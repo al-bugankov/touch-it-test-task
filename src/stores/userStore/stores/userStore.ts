@@ -1,8 +1,11 @@
 import { defineStore } from 'pinia'
+import type {IUserStoreState} from "@/stores/userStore/types/IUserStoreState.ts";
 
 export const useUserStore = defineStore('userStore', {
-  state: () => ({
+  state: (): IUserStoreState => ({
     isUserLogin: false,
+    currentCategory: '',
+    userCart: []
   }),
   actions: {
     login() {

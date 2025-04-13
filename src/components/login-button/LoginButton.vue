@@ -1,35 +1,35 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useUserStore } from "@/stores/userStore/stores/userStore.ts";
+import { useFeedbackStore } from "@/stores/feedbackStore/stores/feedbackStore.ts";
 
 const userStore = useUserStore();
+const feedbackStore = useFeedbackStore();
 
 const buttonText = ref<string>("Login");
 
 const changeLoginStatus = () => {
-  userStore.isUserLogin ? userStore.logout() : userStore.login()
-  userStore.isUserLogin ? buttonText.value = 'Logout' : buttonText.value = 'Login'
-}
+  if (userStore.isUserLogin) {
+    userStore.logout();
+    buttonText.value = 'Login';
+    feedbackStore.showToast({ text: 'Вы разлогинились!', color: 'info' });
+  } else {
+    userStore.login();
+    buttonText.value = 'Logout';
+    feedbackStore.showToast({ text: 'Вы успешно залогинились!', color: 'success' });
+  }
+};
 
 </script>
 
 <template>
-<button type="button" @click="changeLoginStatus">
+<button type="button" class="action-button" @click="changeLoginStatus">
   <svg-icon name="user" class="icon" />
   {{ buttonText }}
 </button>
 </template>
 
 <style lang="scss" scoped>
-button {
-  width: 152px;
-  height: 50px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: $border-radius;
-  background-color: #A259FF;
-}
 .icon {
   width: 20px;
   height: 20px;
