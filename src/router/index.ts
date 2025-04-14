@@ -35,7 +35,7 @@ router.beforeEach((to, from, next) => {
       text: 'Пожалуйста залогиньтесь',
       color: 'error',
     })
-    return next(false)
+    return next( '/')
   }
 
   next()

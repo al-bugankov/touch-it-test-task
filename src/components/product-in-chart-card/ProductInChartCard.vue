@@ -1,14 +1,12 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { useUserStore } from "@/stores/userStore/stores/userStore.ts";
-import { useRouter } from "vue-router";
 import type { IApiStoreProductType } from "@/stores/apiStore/types/IApiStoreProductType.ts";
-import { ERouteNames } from "@/router/ERouteNames.ts";
-import ProductCounter from "@/components/product-counter/ProductCounter.vue";
 import NavButton from "@/components/nav-button/NavButton.vue";
+import ProductCounter from "@/components/product-counter/ProductCounter.vue";
+
 
 const userStore = useUserStore();
-const router = useRouter();
 
 const props = defineProps<{
   product: IApiStoreProductType;
@@ -37,10 +35,7 @@ const handleCounterUpdate = (newValue: number) => {
 
 const deleteItem = (id: number) => {
   userStore.userCart = userStore.userCart.filter(item => item.id !== id)
-}
-
-const goHome = () => {
-  router.push({name: ERouteNames.SHOP})
+  userStore.saveCartToLocalStorage();
 }
 </script>
 
@@ -50,24 +45,19 @@ const goHome = () => {
     <div class="product-card__content">
       <p class="product-card__title describe">Название <span class="block">{{ props.product.title }}</span></p>
       <p class="product-card__price describe coast">Стоимость <span class="block coast">{{ props.product.price }} $ </span></p>
-      <div class="product-card__count describe">Количество <span class="block coast"><product-counter @update:counter="handleCounterUpdate"/></span>
+      <div class="product-card__count describe">Количество <span class="block coast"><product-counter @update:counter="handleCounterUpdate"/></span></div>
         <div class="product-card__delete-button">
           <nav-button buttonText="Удалить товар" class="action-button" @click="deleteItem(props.product.id)" />
         </div>
-    </div>
 </div>
   </v-card>
-  <div v-else class="product-card__empty">
-    <p>Корзина пустая</p>
-    <nav-button buttonText="Вернуться на главную" class="action-button" @click="goHome" />
-  </div>
 </template>
 
 <style scoped lang="scss">
 
 .product-card {
   width: 100%;
-  min-width: 350px;
+  height: 100%;
   min-height: 230px;
   display: flex;
   justify-content: space-evenly;
@@ -89,6 +79,7 @@ const goHome = () => {
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  width: 100%;
 }
 
 .product-card__image {
@@ -115,21 +106,22 @@ const goHome = () => {
   color: $button-background;
 }
 
+.product-card__delete-button {
+  min-width: 100%;
+  display: flex;
+  justify-content: center;
+}
+
 .product-card__footer {
   padding: 10px;
   width: 100%;
 }
 
-.product-card__empty {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-width: 300px;
-}
-
 .action-button {
-  margin-top: 16px;
+  margin-block: 16px;
+  border: none;
+  width: 90%;
+  max-width: 360px;
 }
 
 </style>

@@ -1,20 +1,25 @@
 <script setup lang="ts">
-import {onMounted} from "vue";
-import {useApiStore} from "@/stores/apiStore/stores/apiStore.ts";
+import { onMounted } from "vue";
+import { useApiStore } from "@/stores/apiStore/stores/apiStore.ts";
 import CategoryCard from "@/components/category-card/CategoryCard.vue";
 
 const apiStore = useApiStore();
 
 onMounted(async () => {
-  await apiStore.getAllCategories()
-  console.log('apiStore.categories',apiStore.categories)
-})
+  if (!apiStore.categories.length) {
+    await apiStore.getAllCategories();
+  }
+
+  if (!apiStore.products.length) {
+    await apiStore.getAllProducts();
+  }})
 </script>
+
 
 <template>
   <v-container>
     <v-row
-      class="category-list"
+      class="category-list content"
     >
       <v-col
         v-for="(category, index) in apiStore.categories"
@@ -36,8 +41,8 @@ onMounted(async () => {
 .category-list {
   justify-content: center;
   align-items: center;
-  row-gap: 24px;
-  column-gap: 32px;
+  row-gap: 10px;
+  column-gap: 10px;
   display: flex;
   flex-wrap: wrap;
 

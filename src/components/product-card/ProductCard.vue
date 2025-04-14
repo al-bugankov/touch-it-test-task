@@ -15,6 +15,7 @@ const addProductToCart = (product: IApiStoreProductType) => {
     return
   }
   userStore.userCart.push(product);
+  userStore.saveCartToLocalStorage();
   feedbackStore.showToast({ text: 'Товар добавлен в корзину', color: 'success' });
 }
 </script>
@@ -40,7 +41,6 @@ const addProductToCart = (product: IApiStoreProductType) => {
 <style scoped lang="scss">
 
 .product-card {
-    max-width: 510px;
     height: 100%;
     display: flex;
     align-items: center;

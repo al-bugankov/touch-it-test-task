@@ -4,4 +4,6 @@ export interface IUserStoreState {
   isUserLogin: boolean,
   currentCategory: string,
   userCart: IApiStoreProductType[],
+  searchQuery: string,
+  sortOption: string,
 }

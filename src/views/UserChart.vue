@@ -1,28 +1,32 @@
 <script setup lang="ts">
-import { computed, ref } from "vue"
+import {computed, onMounted, ref} from "vue"
 import { useUserStore } from "@/stores/userStore/stores/userStore.ts";
+import { useRouter } from "vue-router";
 import ProductInChartCard from "@/components/product-in-chart-card/ProductInChartCard.vue";
 import OrderButton from "@/components/order-button/OrderButton.vue";
 import type { IApiStoreProductType } from "@/stores/apiStore/types/IApiStoreProductType.ts";
+import { ERouteNames } from "@/router/ERouteNames.ts";
+import NavButton from "@/components/nav-button/NavButton.vue";
 
 const userStore = useUserStore();
+const router = useRouter();
 
-const userChartProducts = userStore.userCart as IApiStoreProductType[]
+const userChartProducts = computed<IApiStoreProductType[]>(() => userStore.userCart);
 
 // Создаем объект для хранения количества каждого товара
 const counters = ref<Record<IApiStoreProductType['id'], number>>({})
 
-// Инициализация
-userChartProducts.forEach(product => {
-  counters.value[product.id] = 1
-})
-
 // Вычисляем общую стоимость
-const totalPrice = computed(() => {
-  return userChartProducts.reduce((total, product) => {
-    return total + (product.price * (counters.value[product.id]))
-  }, 0)
-})
+const totalPrice = computed(() =>
+  parseFloat(
+    userChartProducts.value
+      .reduce((sum, product) => {
+        const quantity = counters.value[product.id] || 1;
+        return sum + product.price * quantity;
+      }, 0)
+      .toFixed(2)
+  )
+);
 
 const handleItemUpdate = (updatedItem: {
   id: IApiStoreProductType['id']
@@ -31,35 +35,49 @@ const handleItemUpdate = (updatedItem: {
   counters.value[updatedItem.id] = updatedItem.quantity
 }
 
+const goHome = () => {
+  router.push({name: ERouteNames.SHOP})
+}
 </script>
 
 <template>
   <v-container>
-<div class="user-chart">
-  <header class="user-chart__header">
-    <h1>Корзина</h1>
-  </header>
-  <v-row class="user-chart__content">
-    <v-col
-      v-for="product in userChartProducts"
-      :key="product.id"
-      cols="12"
-      sm="12"
-      md="12"
-      lg="6"
-    >
-    <product-in-chart-card
-      :product="product"
-      v-model:counter="counters[product.id]"
-      @update:total="handleItemUpdate"
-    />
-</v-col>
-    </v-row>
-  <div v-if="userStore.userCart.length > 0" class="user-chart__total-price">
-<order-button :totalPrice="totalPrice" />
-  </div>
-</div>
-    </v-container>
+    <div class="user-chart">
+      <header class="user-chart__header">
+        <h1>Chart</h1>
+      </header>
+
+      <template v-if="userStore.userCart.length > 0">
+        <v-row class="user-chart__content">
+          <v-col
+            v-for="product in userChartProducts"
+            :key="product.id"
+            class="user-chart__item"
+            cols="12"
+            sm="12"
+            md="12"
+            lg="6"
+          >
+            <product-in-chart-card
+              :product="product"
+              v-model:counter="counters[product.id]"
+              @update:total="handleItemUpdate"
+            />
+          </v-col>
+        </v-row>
+        <div class="user-chart__total-price">
+          <order-button :totalPrice="totalPrice" class="pay-button" />
+        </div>
+      </template>
+
+      <template v-else>
+        <div class="user-chart__empty">
+          <p>Корзина пустая</p>
+          <nav-button buttonText="Вернуться на главную" class="action-button" @click="goHome" />
+        </div>
+      </template>
+    </div>
+  </v-container>
 </template>
 
 <style scoped>
@@ -70,6 +88,7 @@ const handleItemUpdate = (updatedItem: {
 }
 
 .user-chart__content {
+  width: 100%;
   margin: 0 auto;
 }
 .user-chart__header {
@@ -80,5 +99,30 @@ const handleItemUpdate = (updatedItem: {
 .user-chart__total-price {
   display: flex;
   justify-content: flex-end;
+}
+
+.user-chart__item {
+  width: 100%;
+}
+
+.pay-button {
+  margin: 0 auto;
+  width: 90%;
+  max-width: 360px;
+}
+
+.user-chart__empty {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  min-width: 300px;
+}
+
+.action-button {
+  max-width: 360px;
+  width: 90%;
+  border: none;
+  margin-top: 10px;
 }
 </style>
