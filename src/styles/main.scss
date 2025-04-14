@@ -131,10 +131,16 @@ body {
   align-items: center;
   background-color: rgb(var(--v-theme-primary));
   color: var(--v-theme-accent);
+  font-family: regular, sans-serif;
 }
 
 .content {
   padding-inline: 30px;
+}
+
+.v-select,
+.v-text-field {
+  font-family: medium, sans-serif;
 }
 
 .action-button {

@@ -9,6 +9,11 @@ const userStore = useUserStore();
 
 const searchQuery = ref('');
 
+const itemsPerPage = computed({
+  get: () => userStore.itemsPerPage,
+  set: (value) => userStore.itemsPerPage = value
+});
+
 const sortOption = computed({
   get: () => userStore.sortOption,
   set: (value) => userStore.sortOption = value
@@ -32,59 +37,90 @@ const filteredProducts = computed(() => {
   return result;
 });
 
+const paginatedProducts = computed(() =>
+  filteredProducts.value.slice(0, itemsPerPage.value)
+);
+
 watch([selectedCategory, searchQuery, sortOption], () => {
-  userStore.saveFiltersToLocalStorage(selectedCategory.value, sortOption.value);
+  userStore.saveFiltersToLocalStorage(selectedCategory.value, sortOption.value, itemsPerPage.value);
 });
 </script>
 
 <template>
   <v-container>
-<div class="products-list">
-  <header class="products-list__header">
-    <v-select
-      v-model="selectedCategory"
-      :items="categories"
-    label="Текущая категория"
-  />
-    <v-select
-      v-model="sortOption"
-      :items="[
-    { title: 'Без сортировки', value: '' },
-    { title: 'Сначала дешевые', value: 'asc' },
-    { title: 'Сначала дорогие', value: 'desc' }
-  ]"
-      label="Сортировка по цене"
-    />
-    <v-text-field
-      v-model="searchQuery"
-      label="Поиск по названию"
-      clearable
-    />
-  </header>
-  <v-row class="products-list__cards">
-    <v-col
-      v-for="product in filteredProducts"
-      :key="product.id"
-      class="products-list__item"
-      cols="12"
-       sm="8"
-       md="6"
-       lg="4"
-       >
-    <product-card :product="product" />
-    </v-col>
-  </v-row>
-</div>
+    <div class="products-list">
+      <header class="products-list__header">
+        <v-row dense>
+          <v-col cols="12" sm="6" md="3">
+            <v-select
+              v-model="selectedCategory"
+              :items="categories"
+              label="Текущая категория"
+            />
+          </v-col>
+
+          <v-col cols="12" sm="6" md="3">
+            <v-select
+              v-model="sortOption"
+              :items="[
+                { title: 'Без сортировки', value: '' },
+                { title: 'Сначала дешевые', value: 'asc' },
+                { title: 'Сначала дорогие', value: 'desc' }
+              ]"
+              label="Сортировка по цене"
+            />
+          </v-col>
+
+          <v-col cols="12" sm="6" md="3">
+            <v-select
+              v-model="itemsPerPage"
+              :items="[6, 12, 18, 24]"
+              label="Товаров на странице"
+            />
+          </v-col>
+
+          <v-col cols="12" sm="6" md="3">
+            <v-text-field
+              v-model="searchQuery"
+              label="Поиск по названию"
+              clearable
+            />
+          </v-col>
+        </v-row>
+      </header>
+
+      <v-row class="products-list__cards">
+        <v-col
+          v-for="product in paginatedProducts"
+          :key="product.id"
+          cols="12"
+          sm="8"
+          md="6"
+          lg="4"
+          class="products-list__item"
+        >
+          <product-card :product="product" />
+        </v-col>
+      </v-row>
+    </div>
   </v-container>
 </template>
 
-<style scoped>
-.products-list__item {
-  display: flex;
-  justify-content: center;
-}
+<style scoped lang="scss">
+.products-list {
+  &__header {
+    margin-bottom: 20px;
+  }
 
-.products-list__cards {
-  justify-content: center;
+  &__cards {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  &__item {
+    display: flex;
+    justify-content: center;
+  }
 }
 </style>

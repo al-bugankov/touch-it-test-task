@@ -9,14 +9,14 @@ const toggleTheme = () => {
 </script>
 
 <template>
-  <label class="project-header__switch">
-    <input id="theme-switcher" type="checkbox" @change="toggleTheme"/>
-    <span class="project-header__slider"></span>
+  <label class="theme-switcher">
+    <input id="theme-switcher" type="checkbox" @change="toggleTheme" />
+    <span class="theme-switcher__slider"></span>
   </label>
 </template>
 
-<style lang="scss">
-.project-header__switch {
+<style scoped lang="scss">
+.theme-switcher {
   display: inline-flex;
   align-items: center;
   justify-content: flex-start;
@@ -31,23 +31,18 @@ const toggleTheme = () => {
     display: none;
   }
 
-  .project-header__slider {
+  &__slider {
     width: 15px;
     height: 15px;
-    background: url('/src/assets/icons/theme-switcher/moon.svg') no-repeat center/contain;
+    margin: 2px;
     border-radius: 50%;
+    background: url('/src/assets/icons/theme-switcher/moon.svg') no-repeat center/contain;
     transition:
       transform 0.4s,
       background-image 0.4s;
-    margin: 2px;
-
-    &.checked {
-      transform: translateX(31px);
-      background: url('/src/assets/icons/theme-switcher/sun.svg') no-repeat center/contain;
-    }
   }
 
-  input:checked + .project-header__slider {
+  input:checked + &__slider {
     transform: translateX(31px);
     background: url('/src/assets/icons/theme-switcher/sun.svg') no-repeat center/contain;
   }

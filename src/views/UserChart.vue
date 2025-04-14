@@ -2,10 +2,10 @@
 import {computed, onMounted, ref} from "vue"
 import { useUserStore } from "@/stores/userStore/stores/userStore.ts";
 import { useRouter } from "vue-router";
+import { ERouteNames } from "@/router/ERouteNames.ts";
+import type { IApiStoreProductType } from "@/stores/apiStore/types/IApiStoreProductType.ts";
 import ProductInChartCard from "@/components/product-in-chart-card/ProductInChartCard.vue";
 import OrderButton from "@/components/order-button/OrderButton.vue";
-import type { IApiStoreProductType } from "@/stores/apiStore/types/IApiStoreProductType.ts";
-import { ERouteNames } from "@/router/ERouteNames.ts";
 import NavButton from "@/components/nav-button/NavButton.vue";
 
 const userStore = useUserStore();
@@ -52,11 +52,11 @@ const goHome = () => {
           <v-col
             v-for="product in userChartProducts"
             :key="product.id"
-            class="user-chart__item"
             cols="12"
             sm="12"
             md="12"
             lg="6"
+            class="user-chart__item"
           >
             <product-in-chart-card
               :product="product"
@@ -65,64 +65,75 @@ const goHome = () => {
             />
           </v-col>
         </v-row>
-        <div class="user-chart__total-price">
-          <order-button :totalPrice="totalPrice" class="pay-button" />
+
+        <div class="user-chart__total">
+          <order-button :totalPrice="totalPrice" class="user-chart__pay-button" />
         </div>
       </template>
 
       <template v-else>
         <div class="user-chart__empty">
           <p>Корзина пустая</p>
-          <nav-button buttonText="Вернуться на главную" class="action-button" @click="goHome" />
+          <nav-button
+            buttonText="Вернуться на главную"
+            class="user-chart__action-button"
+            @click="goHome"
+          />
         </div>
       </template>
     </div>
   </v-container>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
 .user-chart {
   width: 100%;
   display: flex;
   flex-direction: column;
-}
 
-.user-chart__content {
-  width: 100%;
-  margin: 0 auto;
-}
-.user-chart__header {
-  text-align: center;
-  margin-bottom: 16px;
-}
+  &__header {
+    text-align: center;
+    margin-bottom: 16px;
+  }
 
-.user-chart__total-price {
-  display: flex;
-  justify-content: flex-end;
-}
+  &__content {
+    width: 100%;
+    margin: 0 auto;
+  }
 
-.user-chart__item {
-  width: 100%;
-}
+  &__item {
+    width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 
-.pay-button {
-  margin: 0 auto;
-  width: 90%;
-  max-width: 360px;
-}
+  &__total {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 20px;
+  }
 
-.user-chart__empty {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  min-width: 300px;
-}
+  &__pay-button {
+    margin: 0 auto;
+    width: 90%;
+    max-width: 360px;
+  }
 
-.action-button {
-  max-width: 360px;
-  width: 90%;
-  border: none;
-  margin-top: 10px;
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-width: 300px;
+    font-family: semibold, sans-serif;
+    font-size: 24px;
+  }
+
+  &__action-button {
+    max-width: 360px;
+    width: 90%;
+    border: none;
+    margin-top: 10px;
+  }
 }
 </style>

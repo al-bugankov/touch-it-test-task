@@ -8,6 +8,7 @@ export const useUserStore = defineStore('userStore', {
     userCart: [],
     searchQuery: '',
     sortOption: '',
+    itemsPerPage: 6,
   }),
   actions: {
     login() {
@@ -27,16 +28,17 @@ export const useUserStore = defineStore('userStore', {
       }
     },
 
-    saveFiltersToLocalStorage(category: string, sort: string) {
-      localStorage.setItem('filters', JSON.stringify({category, sort}));
+    saveFiltersToLocalStorage(category: string, sort: string, itemsPerPage: number) {
+      localStorage.setItem('filters', JSON.stringify({category, sort, itemsPerPage}));
     },
 
     loadFiltersFromLocalStorage() {
       const filters = localStorage.getItem('filters');
       if (filters) {
-        const {category, sort} = JSON.parse(filters);
+        const {category, sort, itemsPerPage} = JSON.parse(filters);
         this.currentCategory = category;
         this.sortOption = sort;
+        this.itemsPerPage = itemsPerPage;
       }
     }
   }

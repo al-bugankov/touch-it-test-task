@@ -6,4 +6,5 @@ export interface IUserStoreState {
   userCart: IApiStoreProductType[],
   searchQuery: string,
   sortOption: string,
+  itemsPerPage: number
 }

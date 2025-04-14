@@ -43,18 +43,17 @@ const deleteItem = (id: number) => {
   <v-card v-if="userStore.userCart.length > 0" class="product-card" elevation="2">
     <img class="product-card__image" :src="props.product.image" :alt="props.product.title" />
     <div class="product-card__content">
-      <p class="product-card__title describe">Название <span class="block">{{ props.product.title }}</span></p>
-      <p class="product-card__price describe coast">Стоимость <span class="block coast">{{ props.product.price }} $ </span></p>
-      <div class="product-card__count describe">Количество <span class="block coast"><product-counter @update:counter="handleCounterUpdate"/></span></div>
-        <div class="product-card__delete-button">
-          <nav-button buttonText="Удалить товар" class="action-button" @click="deleteItem(props.product.id)" />
-        </div>
-</div>
+      <p class="product-card__title product-card__label">Название <span class="product-card__text">{{ props.product.title }}</span></p>
+      <p class="product-card__price product-card__label">Стоимость <span class="product-card__text product-card__text--price">{{ props.product.price }} $ </span></p>
+      <div class="product-card__count product-card__label">Количество <span class="product-card__text"><product-counter @update:counter="handleCounterUpdate" /></span></div>
+      <div class="product-card__delete">
+        <nav-button buttonText="Удалить товар" class="product-card__button action-button" @click="deleteItem(props.product.id)" />
+      </div>
+    </div>
   </v-card>
 </template>
 
 <style scoped lang="scss">
-
 .product-card {
   width: 100%;
   height: 100%;
@@ -72,56 +71,51 @@ const deleteItem = (id: number) => {
     flex-direction: column;
     align-items: center;
   }
-}
 
-.product-card__content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
-}
+  &__image {
+    max-width: 150px;
+    padding: 5px;
+    border-radius: $border-radius;
+  }
 
-.product-card__image {
-  max-width: 150px;
-  padding: 5px;
-  border-radius: $border-radius;
-}
+  &__content {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+  }
 
-.describe {
-  font-family: semibold, sans-serif;
-  font-size: 16px;
-  text-transform: uppercase;
-  text-align: center;
-  font-weight: bold;
-  margin-bottom: 10px;
-}
-.block {
-  display: block;
-  font-family: regular, sans-serif;
-  font-size: 14px;
-}
+  &__label {
+    font-family: semibold, sans-serif;
+    font-size: 16px;
+    text-transform: uppercase;
+    text-align: center;
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
 
-.coast {
-  color: $button-background;
-}
+  &__text {
+    display: block;
+    font-family: regular, sans-serif;
+    font-size: 14px;
 
-.product-card__delete-button {
-  min-width: 100%;
-  display: flex;
-  justify-content: center;
-}
+    &--price {
+      color: $button-background;
+    }
+  }
 
-.product-card__footer {
-  padding: 10px;
-  width: 100%;
-}
+  &__delete {
+    min-width: 100%;
+    display: flex;
+    justify-content: center;
+  }
 
-.action-button {
-  margin-block: 16px;
-  border: none;
-  width: 90%;
-  max-width: 360px;
+  &__button {
+    margin-block: 16px;
+    border: none;
+    width: 90%;
+    max-width: 360px;
+  }
 }
-
 </style>

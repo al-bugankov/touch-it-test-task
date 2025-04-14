@@ -19,7 +19,7 @@ onMounted(async () => {
 <template>
   <v-container>
     <v-row
-      class="category-list content"
+      class="category-list"
     >
       <v-col
         v-for="(category, index) in apiStore.categories"

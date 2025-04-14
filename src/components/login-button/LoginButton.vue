@@ -19,7 +19,6 @@ const changeLoginStatus = () => {
     feedbackStore.showToast({ text: 'Вы успешно залогинились!', color: 'success' });
   }
 };
-
 </script>
 
 <template>
