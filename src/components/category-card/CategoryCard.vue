@@ -13,7 +13,7 @@ defineProps<{
   name: string
 }>()
 
-const goToCategory = async (name: string): void => {
+const goToCategory = async (name: string): Promise<void> => {
 userStore.currentCategory = name;
 await apiStore.getAllProducts()
 await router.push({ name: ERouteNames.CATEGORY })
