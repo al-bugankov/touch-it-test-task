@@ -1,4 +1,4 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import { createRouter, createWebHistory, START_LOCATION } from 'vue-router'
 import { useUserStore } from "@/stores/userStore/stores/userStore.ts";
 import { useFeedbackStore } from "@/stores/feedbackStore/stores/feedbackStore.ts";
 import LandingPage from "@/views/LandingPage.vue";
@@ -30,12 +30,21 @@ router.beforeEach((to, from, next) => {
   const userStore = useUserStore()
   const feedbackStore = useFeedbackStore()
 
-  if (to.name === 'chart' && !userStore.isUserLogin) {
+  const isChart = to.name === 'chart' || to.fullPath.startsWith('/chart')
+  const isFirstLoad = from === START_LOCATION
+  const isLoggedIn = userStore.isUserLogin
+
+  if (isChart && !isLoggedIn) {
     feedbackStore.showToast({
       text: 'Пожалуйста залогиньтесь',
       color: 'error',
     })
-    return next( '/')
+
+    if (isFirstLoad) {
+      return next('/')
+    } else {
+      return next(false)
+    }
   }
 
   next()
